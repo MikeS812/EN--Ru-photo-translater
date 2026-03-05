@@ -1,1 +1,5 @@
-# EN--Ru-photo-translater
+# EN->RU-photo-translater
+
+Лёгкий инструмент для перевода текста с экрана: выделите область, получите перевод с английского на русский.
+убедитесь что в одной директории с .exe или .py присутствует папка screenshots, также необходим [tesseract](https://github.com/UB-Mannheim/tesseract/wiki) с верным указанием в 88 строчке.
+
