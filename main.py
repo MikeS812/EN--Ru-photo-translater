@@ -85,7 +85,7 @@ class MainWindow(QMainWindow):
 
 def text_from_foto(foto_name):
     a = []
-    pytesseract.pytesseract.tesseract_cmd = r'' # путь до exe файла tesseract
+    pytesseract.pytesseract.tesseract_cmd = r'' # укажите верный путь до exe файла tesseract
 
     text = pytesseract.image_to_string(f'screenshots/{foto_name}.png')
     for i in text.split('\n'):
