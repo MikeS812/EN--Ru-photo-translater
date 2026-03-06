@@ -1,4 +1,4 @@
-"""Release 0.1.0"""
+"""Release 0.1.1"""
 
 import os
 import random
@@ -8,11 +8,20 @@ import pytesseract
 from deep_translator import GoogleTranslator
 import sys
 import io
-
 from PyQt6 import uic
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, QComboBox, QCheckBox
 
-ANSWER = []
+"""
+ANSWER: translated phrase
+leng1: the language being translated from
+leng2: language for translation
+FLAG: the check is necessary to save photos correctly.
+"""
+
+ANSWER: list = []
+leng1: str = "en"
+leng2: str = "ru"
+FLAG = False
 
 template = """<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
@@ -23,11 +32,14 @@ template = """<?xml version="1.0" encoding="UTF-8"?>
     <x>0</x>
     <y>0</y>
     <width>548</width>
-    <height>431</height>
+    <height>466</height>
    </rect>
   </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Экранный переводчик</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QMainWindow {
@@ -38,26 +50,177 @@ template = """<?xml version="1.0" encoding="UTF-8"?>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QToolBox" name="toolBox">
       <property name="styleSheet">
-       <string notr="true">QPushButton {
+       <string notr="true">QToolBox {
+    background-color: #404040;
+}
+
+
+
+QToolBox QWidget {
+    background-color: #404040;
+    color: white;
+}</string>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="page">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>530</width>
+         <height>394</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Основное окно</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QPushButton" name="pushButton">
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
                             background-color: #008cf0;
                             color: white;
                         }</string>
-      </property>
-      <property name="text">
-       <string>Выбрать область перевода</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QTextEdit" name="textEdit">
-      <property name="styleSheet">
-       <string notr="true">QTextEdit {
+          </property>
+          <property name="text">
+           <string>Выбрать область перевода</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton_2">
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+                            background-color: #008cf0;
+                            color: white;
+                        }</string>
+          </property>
+          <property name="text">
+           <string>Очистить поле</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="textEdit">
+          <property name="styleSheet">
+           <string notr="true">QTextEdit {
                             background-color: #404040;
                             color: white;
                         }</string>
-      </property>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="page_2">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>530</width>
+         <height>394</height>
+        </rect>
+       </property>
+       <attribute name="label">
+        <string>Настройки</string>
+       </attribute>
+       <widget class="QCheckBox" name="checkBox">
+        <property name="geometry">
+         <rect>
+          <x>9</x>
+          <y>9</y>
+          <width>271</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Сохранять фото</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="comboBox_2">
+        <property name="geometry">
+         <rect>
+          <x>221</x>
+          <y>33</y>
+          <width>59</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <item>
+         <property name="text">
+          <string>ru</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>en</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>de</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>fr</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>es</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>it</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>zh-CN</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>ja</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>89</x>
+          <y>33</y>
+          <width>126</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>     --------&gt;</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="comboBox">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>33</y>
+          <width>59</width>
+          <height>18</height>
+         </rect>
+        </property>
+        <item>
+         <property name="text">
+          <string>en</string>
+         </property>
+        </item>
+       </widget>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -75,32 +238,75 @@ class MainWindow(QMainWindow):
         uic.loadUi(io.StringIO(template), self)
 
         self.pushButton.clicked.connect(self.check)
+        self.pushButton_2.clicked.connect(self.clear)
+        self.setStyleSheet("""* { font-size: 11pt; }""")
+        self.setFixedSize(547, 466)
 
-    def check(self):
+    def clear(self) -> None:
+        self.textEdit.clear()
+
+    def check(self) -> None:
+        """
+        the function takes the translated text from the photo
+        :return: None
+        """
+
+        global FLAG
+        global leng1
+        global leng2
+
+        if self.checkBox.isChecked():
+            FLAG = True
+        else:
+            FLAG = False
+
+        t1 = self.comboBox.currentText()
+        t2 = self.comboBox_2.currentText()
+
+        leng1, leng2 = t1, t2
+
         RegionSelector()
         for i in ANSWER:
             self.textEdit.append(i)
         ANSWER.clear()
 
+        self.textEdit.append("")
+        self.textEdit.append("===================================================")
+        self.textEdit.append("")
 
-def text_from_foto(foto_name):
+
+def text_from_foto(foto_name: str) -> None:
+    """
+    :param foto_name: photo with text
+    :return: text with photo
+    """
+
+    global FLAG
     a = []
-    pytesseract.pytesseract.tesseract_cmd = r'' # укажите верный путь до exe файла tesseract
-
+    pytesseract.pytesseract.tesseract_cmd = r''  # укажите верный путь до exe файла tesseract
+    
     text = pytesseract.image_to_string(f'screenshots/{foto_name}.png')
     for i in text.split('\n'):
         if i != "":
             a.append(i.strip())
+
     translate(a)
-    os.remove(f'screenshots/{foto_name}.png')
+
+    if FLAG:
+        pass
+    else:
+        os.remove(f'screenshots/{foto_name}.png')
 
 
-def translate(text_p):
+def translate(text_p: list[str]) -> None:
+    """
+    :param text_p: the text to be translated
+    :return: translated text
+    """
+
     global ANSWER
     i = " ".join(text_p)
-    # for i in text_p:
-    #     ANSWER.append(GoogleTranslator(source='en', target='ru').translate(i))
-    ANSWER.append(GoogleTranslator(source='en', target='ru').translate(i))
+    ANSWER.append(GoogleTranslator(source=leng1, target=leng2).translate(i))
 
 
 class RegionSelector:
