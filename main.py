@@ -1,5 +1,6 @@
-"""Release 0.1.1"""
+"""Release 0.1.2"""
 
+import datetime
 import os
 import random
 import tkinter as tk
@@ -9,19 +10,21 @@ from deep_translator import GoogleTranslator
 import sys
 import io
 from PyQt6 import uic
-from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QTextEdit, QComboBox, QCheckBox
+from PyQt6.QtWidgets import QApplication, QMainWindow
 
 """
 ANSWER: translated phrase
 leng1: the language being translated from
 leng2: language for translation
 FLAG: the check is necessary to save photos correctly.
+LOG_FLAG: check to save logs to a txt file
 """
 
 ANSWER: list = []
 leng1: str = "en"
 leng2: str = "ru"
 FLAG = False
+LOG_FLAG = True
 
 template = """<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
@@ -220,6 +223,32 @@ QToolBox QWidget {
          </property>
         </item>
        </widget>
+       <widget class="QCheckBox" name="checkBox_2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>70</y>
+          <width>171</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Сохранять историю</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_3">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>100</y>
+          <width>160</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Загрузить историю</string>
+        </property>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -239,11 +268,32 @@ class MainWindow(QMainWindow):
 
         self.pushButton.clicked.connect(self.check)
         self.pushButton_2.clicked.connect(self.clear)
+        self.pushButton_3.clicked.connect(self.open_log)
+
         self.setStyleSheet("""* { font-size: 11pt; }""")
+
         self.setFixedSize(547, 466)
+
+        if "log.txt" in os.listdir("screenshots"):
+            pass
+        else:
+            with open("screenshots/log.txt", 'w', encoding='utf-8') as f:
+                f.write(f'{datetime.datetime.now()}')
 
     def clear(self) -> None:
         self.textEdit.clear()
+
+    def open_log(self):
+        with open("screenshots/log.txt", "r", encoding='utf-8') as log_file:
+            data1 = log_file.readlines()
+
+        if len(data1) != 0:
+            for i in data1:
+                self.textEdit.append(i)
+
+        self.textEdit.append("")
+        self.textEdit.append("==================================================")
+        self.textEdit.append("")
 
     def check(self) -> None:
         """
@@ -251,14 +301,13 @@ class MainWindow(QMainWindow):
         :return: None
         """
 
-        global FLAG
-        global leng1
-        global leng2
+        global FLAG, leng1, leng2, LOG_FLAG
 
-        if self.checkBox.isChecked():
-            FLAG = True
-        else:
-            FLAG = False
+        FLAG = self.checkBox.isChecked()
+        LOG_FLAG = self.checkBox_2.isChecked()
+
+        if LOG_FLAG:
+            f = open("screenshots/log.txt", "a", encoding='utf-8')
 
         t1 = self.comboBox.currentText()
         t2 = self.comboBox_2.currentText()
@@ -268,10 +317,12 @@ class MainWindow(QMainWindow):
         RegionSelector()
         for i in ANSWER:
             self.textEdit.append(i)
+            if LOG_FLAG:
+                print(i, file=f)
         ANSWER.clear()
 
         self.textEdit.append("")
-        self.textEdit.append("===================================================")
+        self.textEdit.append("==================================================")
         self.textEdit.append("")
 
 
@@ -284,8 +335,8 @@ def text_from_foto(foto_name: str) -> None:
     global FLAG
     a = []
     pytesseract.pytesseract.tesseract_cmd = r''  # укажите верный путь до exe файла tesseract
-    
-    text = pytesseract.image_to_string(f'screenshots/{foto_name}.png')
+
+    text = pytesseract.image_to_string(f'screenshots/{foto_name}')
     for i in text.split('\n'):
         if i != "":
             a.append(i.strip())
@@ -295,7 +346,7 @@ def text_from_foto(foto_name: str) -> None:
     if FLAG:
         pass
     else:
-        os.remove(f'screenshots/{foto_name}.png')
+        os.remove(f'screenshots/{foto_name}')
 
 
 def translate(text_p: list[str]) -> None:
@@ -331,8 +382,8 @@ class RegionSelector:
         self.root.mainloop()
 
     def s(self):
-        self.d = random.randint(0, 1000)
-        filename = f"screenshots/screenshot_{self.d}.png"
+        self.fil = "".join(f"screenshot_{str(datetime.datetime.now())}.png".split()).replace(':', '-')
+        filename = f"screenshots/{self.fil}"
 
         screenshot = ImageGrab.grab(bbox=self.region)
         screenshot.save(filename)
@@ -356,7 +407,7 @@ class RegionSelector:
         y2 = max(self.start_y, event.y)
         self.region = (x1, y1, x2, y2)
         self.s()
-        text_from_foto(f"screenshot_{self.d}")
+        text_from_foto(self.fil)
         self.root.quit()
         self.root.destroy()
 
