@@ -1,5 +1,6 @@
 """Release 0.1.3"""
 import datetime
+import json
 import os
 import tkinter as tk
 from PIL import ImageGrab
@@ -596,7 +597,13 @@ def text_from_foto(foto_name: str, flag: int) -> None:
     pytesseract.pytesseract.tesseract_cmd = r'C:\Users\Admin\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'  # укажите верный путь до exe файла tesseract
 
     if flag == 0:
-        text = pytesseract.image_to_string(f'screenshots/{foto_name}')
+        try:
+            text = pytesseract.image_to_string(f'screenshots/{foto_name}')
+        except Exception as e:
+            jsn = {"Error": str(e), "data": str(datetime.datetime.now()), "part_of_the_code": "text_from_foto"}
+            with open('screenshots/log_error.json', 'w', encoding="utf-8") as f:
+                json.dump(jsn, f, indent=4, sort_keys=True)
+            text = "error, check the path to the tesseract file"
         for i in text.split('\n'):
             if i != "":
                 a.append(i.strip())
@@ -614,6 +621,7 @@ def text_from_foto(foto_name: str, flag: int) -> None:
                 a.append(i.strip())
 
         translate(a)
+
 
 
 def translate(text_p: list[str]) -> None:
