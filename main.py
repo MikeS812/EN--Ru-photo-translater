@@ -1,16 +1,15 @@
-"""Release 0.1.2"""
-
+"""Release 0.1.3"""
 import datetime
 import os
-import random
 import tkinter as tk
 from PIL import ImageGrab
 import pytesseract
+from PyQt6.QtCore import pyqtSignal
 from deep_translator import GoogleTranslator
 import sys
 import io
 from PyQt6 import uic
-from PyQt6.QtWidgets import QApplication, QMainWindow
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QFileDialog
 
 """
 ANSWER: translated phrase
@@ -96,17 +95,47 @@ QToolBox QWidget {
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton_2">
-          <property name="styleSheet">
-           <string notr="true">QPushButton {
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QPushButton" name="pushButton_2">
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
                             background-color: #008cf0;
                             color: white;
                         }</string>
-          </property>
-          <property name="text">
-           <string>Очистить поле</string>
-          </property>
-         </widget>
+            </property>
+            <property name="text">
+             <string>Выбрать текст</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_4">
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+                            background-color: #008cf0;
+                            color: white;
+                        }</string>
+            </property>
+            <property name="text">
+             <string>Очистить поле</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_5">
+            <property name="styleSheet">
+             <string notr="true">QPushButton {
+                            background-color: #008cf0;
+                            color: white;
+                        }</string>
+            </property>
+            <property name="text">
+             <string>Выбрать фото</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="QTextEdit" name="textEdit">
@@ -241,12 +270,25 @@ QToolBox QWidget {
          <rect>
           <x>10</x>
           <y>100</y>
-          <width>160</width>
+          <width>141</width>
           <height>23</height>
          </rect>
         </property>
         <property name="text">
          <string>Загрузить историю</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_6">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>130</y>
+          <width>141</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Очистить историю</string>
         </property>
        </widget>
       </widget>
@@ -260,25 +302,221 @@ QToolBox QWidget {
 </ui>
 """
 
+text_menu = """<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>menu</class>
+ <widget class="QWidget" name="menu">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>322</width>
+    <height>200</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget {
+                            background-color: #404040;
+                            color: white;
+                        }</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QComboBox" name="comboBox_4">
+       <item>
+        <property name="text">
+         <string>en</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>ru</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>de</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>fr</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>es</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>it</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>zh-CN</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>ja</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>              -&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboBox_3">
+       <item>
+        <property name="text">
+         <string>ru</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>en</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>de</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>fr</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>es</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>it</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>zh-CN</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>ja</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QTextEdit" name="textEdit"/>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="text">
+        <string>Перевести</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="text">
+        <string>Отмена</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
+"""
 
 class MainWindow(QMainWindow):
     def __init__(self):
+
         super().__init__()
+
         uic.loadUi(io.StringIO(template), self)
 
         self.pushButton.clicked.connect(self.check)
-        self.pushButton_2.clicked.connect(self.clear)
+        self.pushButton_4.clicked.connect(self.clear)
         self.pushButton_3.clicked.connect(self.open_log)
+        self.pushButton_2.clicked.connect(self.translator)
+        self.pushButton_5.clicked.connect(self.photo_perevod)
+        self.pushButton_6.clicked.connect(self.delete_log)
 
-        self.setStyleSheet("""* { font-size: 11pt; }""")
+        self.translator_window = None
+
+        self.setStyleSheet("""* { font-size: 10.5pt; }""")
 
         self.setFixedSize(547, 466)
-
+        os.makedirs("screenshots", exist_ok=True)
         if "log.txt" in os.listdir("screenshots"):
             pass
         else:
             with open("screenshots/log.txt", 'w', encoding='utf-8') as f:
                 f.write(f'{datetime.datetime.now()}')
+
+    def delete_log(self):
+        with open("screenshots/log.txt", "w") as f:
+            pass
+
+    def translator(self):
+        self.translator_window = Translator()
+        self.translator_window.translation.connect(self.on_t)
+        self.translator_window.show()
+
+    def on_t(self, translated_text):
+        self.textEdit.append("")
+        self.textEdit.append(f"Текстовый перевод: {translated_text}")
+        self.textEdit.append("")
+
+    def photo_perevod(self):
+        path, _ = QFileDialog.getOpenFileName(
+            self, "Открыть фото", "", "All files (*)"
+        )
+        if not path:
+            return
+
+        text_from_foto(path, 1)
+        if LOG_FLAG:
+            f = open("screenshots/log.txt", "a", encoding='utf-8')
+
+        t1 = self.comboBox.currentText()
+        t2 = self.comboBox_2.currentText()
+
+        leng1, leng2 = t1, t2
+
+
+        for i in ANSWER:
+            self.textEdit.append(i)
+            if LOG_FLAG:
+                print(i, file=f)
+        ANSWER.clear()
+
+        self.textEdit.append("")
+        self.textEdit.append("==================================================")
+        self.textEdit.append("")
 
     def clear(self) -> None:
         self.textEdit.clear()
@@ -326,27 +564,56 @@ class MainWindow(QMainWindow):
         self.textEdit.append("")
 
 
-def text_from_foto(foto_name: str) -> None:
+class Translator(QWidget):
+    translation = pyqtSignal(str)
+
+    def __init__(self):
+        super().__init__()
+        uic.loadUi(io.StringIO(text_menu), self)
+        self.pushButton_2.clicked.connect(self.off_f)
+        self.pushButton.clicked.connect(self.translate_text)
+
+        self.setFixedSize(322, 200)
+
+    def off_f(self):
+        self.close()
+
+    def translate_text(self):
+        text = self.textEdit.toPlainText()
+        l1, l2 = self.comboBox_4.currentText(), self.comboBox_3.currentText()
+        self.translation.emit(GoogleTranslator(source=l1, target=l2).translate(text))
+
+
+def text_from_foto(foto_name: str, flag: int) -> None:
     """
+    :param flag: flag func
     :param foto_name: photo with text
     :return: text with photo
     """
 
     global FLAG
     a = []
-    pytesseract.pytesseract.tesseract_cmd = r''  # укажите верный путь до exe файла tesseract
+    pytesseract.pytesseract.tesseract_cmd = r'C:\Users\Admin\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'  # укажите верный путь до exe файла tesseract
 
-    text = pytesseract.image_to_string(f'screenshots/{foto_name}')
-    for i in text.split('\n'):
-        if i != "":
-            a.append(i.strip())
+    if flag == 0:
+        text = pytesseract.image_to_string(f'screenshots/{foto_name}')
+        for i in text.split('\n'):
+            if i != "":
+                a.append(i.strip())
 
-    translate(a)
+        translate(a)
 
-    if FLAG:
-        pass
-    else:
-        os.remove(f'screenshots/{foto_name}')
+        if FLAG:
+            pass
+        else:
+            os.remove(f'screenshots/{foto_name}')
+    elif flag == 1:
+        text = pytesseract.image_to_string(foto_name)
+        for i in text.split('\n'):
+            if i != "":
+                a.append(i.strip())
+
+        translate(a)
 
 
 def translate(text_p: list[str]) -> None:
@@ -407,7 +674,7 @@ class RegionSelector:
         y2 = max(self.start_y, event.y)
         self.region = (x1, y1, x2, y2)
         self.s()
-        text_from_foto(self.fil)
+        text_from_foto(self.fil, 0)
         self.root.quit()
         self.root.destroy()
 
