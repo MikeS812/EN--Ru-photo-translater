@@ -26,6 +26,8 @@ leng2: str = "ru"
 FLAG = False
 LOG_FLAG = True
 
+"""template - main menu design"""
+
 template = """<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>MainWindow</class>
@@ -302,6 +304,8 @@ QToolBox QWidget {
  <connections/>
 </ui>
 """
+
+""" text_menu - text translator design"""
 
 text_menu = """<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
