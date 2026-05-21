@@ -476,18 +476,19 @@ class MainWindow(QMainWindow):
 
         self.setFixedSize(547, 466)
         os.makedirs("screenshots", exist_ok=True)
+
         if "log.txt" in os.listdir("screenshots"):
             pass
         else:
             with open("screenshots/log.txt", 'w', encoding='utf-8') as f:
-                f.write(f'{datetime.datetime.now()}')
+                f.write(f'{datetime.datetime.now()}\n')
 
     def delete_log(self):
         with open("screenshots/log.txt", "w") as f:
             pass
 
     def translator(self):
-        self.translator_window = Translator()
+        self.translator_window = Translator(self.checkBox_2.isChecked())
         self.translator_window.translation.connect(self.on_t)
         self.translator_window.show()
 
@@ -568,17 +569,20 @@ class MainWindow(QMainWindow):
         self.textEdit.append("==================================================")
         self.textEdit.append("")
 
+        f.close()
+
 
 class Translator(QWidget):
     translation = pyqtSignal(str)
 
-    def __init__(self):
+    def __init__(self, log_file):
         super().__init__()
         uic.loadUi(io.StringIO(text_menu), self)
         self.pushButton_2.clicked.connect(self.off_f)
         self.pushButton.clicked.connect(self.translate_text)
 
         self.setFixedSize(322, 200)
+        self.log_file = log_file
 
     def off_f(self):
         self.close()
@@ -586,7 +590,15 @@ class Translator(QWidget):
     def translate_text(self):
         text = self.textEdit.toPlainText()
         l1, l2 = self.comboBox_4.currentText(), self.comboBox_3.currentText()
-        self.translation.emit(GoogleTranslator(source=l1, target=l2).translate(text))
+        t = GoogleTranslator(source=l1, target=l2).translate(text)
+        self.translation.emit(t)
+
+
+        if self.log_file:
+            f = open("screenshots/log.txt", "a", encoding='utf-8')
+            print(t,  file=f)
+
+            f.close()
 
 
 def text_from_foto(foto_name: str, flag: int) -> None:
