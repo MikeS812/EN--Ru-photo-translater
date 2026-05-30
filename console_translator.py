@@ -13,6 +13,11 @@ from PyQt6 import uic
 if not os.path.exists('screenshots'):
     os.makedirs('screenshots')
 
+
+if not os.path.exists('screenshots/pt.txt'):
+    with open('screenshots/pt.txt', 'w', encoding='utf-8') as f:
+        f.write('')
+
 """
 ANSWER: translated phrase
 leng1: the language being translated from
@@ -20,18 +25,26 @@ leng2: language for translation
 FLAG: the check is necessary to save photos correctly.
 LOG_FLAG: check to save logs to a txt file
 """
+r"""C:\Users\Admin\PycharmProjects\EN--Ru-photo-translaterам\console_translator.py"""
 
 ANSWER: list = []
 leng1: str = "en"
 leng2: str = "ru"
-FLAG = False
-LOG_FLAG = True
+FLAG: bool = False
+LOG_FLAG: bool = True
 
-
+PATH: str = open("screenshots/pt.txt").readline().strip()
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-trl",action='store_true', help="При запуске с этим ключом будет доступен выбор области перевода")
+parser.add_argument("-trl", action='store_true', help="При запуске с этим ключом будет доступен выбор области перевода")
+parser.add_argument("-pth", type=str, help="Путь до файла tesseract")
 args = parser.parse_args()
+
+def set_path():
+    global PATH
+    if args.pth:
+        print(args.pth, file=open("screenshots/pt.txt", "w"))
+        print("Путь установлен")
 
 def text_from_foto(foto_name: str, flag: int) -> None:
     """
@@ -42,7 +55,8 @@ def text_from_foto(foto_name: str, flag: int) -> None:
 
     global FLAG
     a = []
-    pytesseract.pytesseract.tesseract_cmd = r'C:\Users\Admin\AppData\Local\Programs\Tesseract-OCR\tesseract.exe'  # укажите верный путь до exe файла tesseract
+
+    pytesseract.pytesseract.tesseract_cmd = PATH
 
     if flag == 0:
         try:
@@ -148,3 +162,6 @@ def start_trl() -> None | str:
 
 if args.trl:
     start_trl()
+
+if args.pth:
+    set_path()
