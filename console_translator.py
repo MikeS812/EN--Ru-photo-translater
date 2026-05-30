@@ -10,6 +10,9 @@ from deep_translator import GoogleTranslator
 from PyQt6 import uic
 
 
+if not os.path.exists('screenshots'):
+    os.makedirs('screenshots')
+
 """
 ANSWER: translated phrase
 leng1: the language being translated from
