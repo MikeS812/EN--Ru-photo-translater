@@ -9,11 +9,9 @@ import pytesseract
 from deep_translator import GoogleTranslator
 from PyQt6 import uic
 
-
+# checking for the existence of the necessary files
 if not os.path.exists('screenshots'):
     os.makedirs('screenshots')
-
-
 if not os.path.exists('screenshots/pt.txt'):
     with open('screenshots/pt.txt', 'w', encoding='utf-8') as f:
         f.write('')
@@ -22,17 +20,16 @@ if not os.path.exists('screenshots/pt.txt'):
 ANSWER: translated phrase
 leng1: the language being translated from
 leng2: language for translation
-FLAG: the check is necessary to save photos correctly.
+FLAG: the check is necessary to save photos correctly
 LOG_FLAG: check to save logs to a txt file
+PATH: the path to the tesseract file
 """
-r"""C:\Users\Admin\PycharmProjects\EN--Ru-photo-translaterам\console_translator.py"""
 
 ANSWER: list = []
 leng1: str = "en"
 leng2: str = "ru"
 FLAG: bool = False
 LOG_FLAG: bool = True
-
 PATH: str = open("screenshots/pt.txt").readline().strip()
 
 parser = argparse.ArgumentParser()
@@ -40,11 +37,14 @@ parser.add_argument("-trl", action='store_true', help="При запуске с 
 parser.add_argument("-pth", type=str, help="Путь до файла tesseract")
 args = parser.parse_args()
 
-def set_path():
+
+def set_path() -> None:
+    """setting the path to the tesseract file"""
     global PATH
     if args.pth:
         print(args.pth, file=open("screenshots/pt.txt", "w"))
         print("Путь установлен")
+
 
 def text_from_foto(foto_name: str, flag: int) -> None:
     """
@@ -85,7 +85,6 @@ def text_from_foto(foto_name: str, flag: int) -> None:
         translate(a)
 
 
-
 def translate(text_p: list[str]) -> None:
     """
     :param text_p: the text to be translated
@@ -98,6 +97,8 @@ def translate(text_p: list[str]) -> None:
 
 
 class RegionSelector:
+    """a class for selecting the translation area"""
+
     def __init__(self):
         self.root = tk.Tk()
         self.root.attributes('-fullscreen', True)
@@ -149,17 +150,17 @@ class RegionSelector:
         self.root.destroy()
 
 
-def start_trl() -> None | str:
+def start_trl() -> None:
+    """translator's start"""
+
     RegionSelector()
-
-    """ This is text, and i want translate it """
-    """ This is text number two, and i want translate it """
-
     time.sleep(1)
 
     if ANSWER:
         print(*ANSWER)
 
+
+# key verification
 if args.trl:
     start_trl()
 
