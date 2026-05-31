@@ -32,8 +32,26 @@ FLAG: bool = False
 LOG_FLAG: bool = True
 PATH: str = open("screenshots/pt.txt").readline().strip()
 
-# parser keys
-parser = argparse.ArgumentParser()
+# parser keys and settings
+
+parser = argparse.ArgumentParser(
+    prog='Screen Translator',
+    description="""
+╔══════════════════════════════════════════════════════════════╗
+║                 SCREEN TRANSLATOR v1.0.0                     ║
+║                  Перевод текста с экрана                     ║
+╚══════════════════════════════════════════════════════════════╝
+
+Программа позволяет выделить любую область на экране,
+распознать текст с помощью Tesseract OCR и перевести его c английского на русский.
+
+Что нужно для корректной работы:
+  • Tesseract OCR должен быть установлен в системе (... -pth C:/tesseract.exe)
+  • Интернет-соединение для перевода
+    """,
+    formatter_class=argparse.RawDescriptionHelpFormatter
+)
+
 parser.add_argument("-trl", action='store_true', help="При запуске с этим ключом будет доступен выбор области перевода")
 parser.add_argument("-pth", type=str, help="Путь до файла tesseract")
 parser.add_argument("-log", action='store_true', help="Вывод ошибок")
