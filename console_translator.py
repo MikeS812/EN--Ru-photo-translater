@@ -32,11 +32,19 @@ FLAG: bool = False
 LOG_FLAG: bool = True
 PATH: str = open("screenshots/pt.txt").readline().strip()
 
+# parser keys
 parser = argparse.ArgumentParser()
 parser.add_argument("-trl", action='store_true', help="При запуске с этим ключом будет доступен выбор области перевода")
 parser.add_argument("-pth", type=str, help="Путь до файла tesseract")
+parser.add_argument("-log", action='store_true', help="Вывод ошибок")
 args = parser.parse_args()
 
+
+def error_log() -> str | None:
+    """error log output"""
+    with open("screenshots/log_error.json", 'r', encoding='utf-8') as js:
+        data = json.load(js)
+    print(json.dumps(data, indent=4, ensure_ascii=False))
 
 def set_path() -> None:
     """setting the path to the tesseract file"""
@@ -166,3 +174,6 @@ if args.trl:
 
 if args.pth:
     set_path()
+
+if args.log:
+    error_log()
