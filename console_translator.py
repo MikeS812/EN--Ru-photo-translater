@@ -46,6 +46,7 @@ def error_log() -> str | None:
         data = json.load(js)
     print(json.dumps(data, indent=4, ensure_ascii=False))
 
+
 def set_path() -> None:
     """setting the path to the tesseract file"""
     global PATH
@@ -101,7 +102,13 @@ def translate(text_p: list[str]) -> None:
 
     global ANSWER
     i = " ".join(text_p)
-    ANSWER.append(GoogleTranslator(source=leng1, target=leng2).translate(i))
+    try:
+        ANSWER.append(GoogleTranslator(source=leng1, target=leng2).translate(i))
+    except Exception as e:
+        jsn = {"Error": str(e), "data": str(datetime.datetime.now()), "part_of_the_code": "translate"}
+        with open('screenshots/log_error.json', 'w', encoding="utf-8") as f:
+            json.dump(jsn, f, indent=4, sort_keys=True)
+        ANSWER.append("Произошла ошибка")
 
 
 class RegionSelector:
