@@ -9,6 +9,7 @@ import pytesseract
 from deep_translator import GoogleTranslator
 from PyQt6 import uic
 
+
 # checking for the existence of the necessary files
 if not os.path.exists('screenshots'):
     os.makedirs('screenshots')
@@ -55,8 +56,13 @@ parser = argparse.ArgumentParser(
 parser.add_argument("-trl", action='store_true', help="При запуске с этим ключом будет доступен выбор области перевода")
 parser.add_argument("-pth", type=str, help="Путь до файла tesseract")
 parser.add_argument("-log", action='store_true', help="Вывод ошибок")
+parser.add_argument("-tex", nargs="*", help="перевести текст")
+
 args = parser.parse_args()
 
+def translate_text():
+    if args.tex:
+        print(GoogleTranslator(source=leng1, target=leng2).translate(' '.join(args.tex)))
 
 def error_log() -> str | None:
     """error log output"""
@@ -202,3 +208,10 @@ if args.pth:
 
 if args.log:
     error_log()
+
+if args.tex:
+    translate_text()
+
+if not args.trl and not args.pth and not args.log and not args.tex:
+    print("Вы ничего не ввели: "
+          "Используйте -trl для начала работы если путь уже установлен, иначе используйте -pth <путь>")
