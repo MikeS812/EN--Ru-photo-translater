@@ -39,7 +39,7 @@ parser = argparse.ArgumentParser(
     prog='Screen Translator',
     description="""
 ╔══════════════════════════════════════════════════════════════╗
-║                 SCREEN TRANSLATOR v1.0.0                     ║
+║                 SCREEN TRANSLATOR v1.0.2                     ║
 ║                  Перевод текста с экрана                     ║
 ╚══════════════════════════════════════════════════════════════╝
 
