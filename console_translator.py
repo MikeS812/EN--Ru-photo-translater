@@ -56,7 +56,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument("-trl", action='store_true', help="При запуске с этим ключом будет доступен выбор области перевода")
 parser.add_argument("-pth", type=str, help="Путь до файла tesseract")
 parser.add_argument("-log", action='store_true', help="Вывод ошибок")
-parser.add_argument("-tex", nargs="*", help="перевести текст")
+parser.add_argument("-tex", nargs="*", help="Перевести текст")
 
 args = parser.parse_args()
 
