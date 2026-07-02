@@ -456,6 +456,7 @@ text_menu = """<?xml version="1.0" encoding="UTF-8"?>
 </ui>
 """
 
+
 class MainWindow(QMainWindow):
     def __init__(self):
 
@@ -511,7 +512,6 @@ class MainWindow(QMainWindow):
         t2 = self.comboBox_2.currentText()
 
         leng1, leng2 = t1, t2
-
 
         for i in ANSWER:
             self.textEdit.append(i)
@@ -627,7 +627,6 @@ def text_from_foto(foto_name: str, flag: int) -> None:
         translate(a)
 
 
-
 def translate(text_p: list[str]) -> None:
     """
     :param text_p: the text to be translated
@@ -691,7 +690,7 @@ class RegionSelector:
         self.root.destroy()
 
 
-if __name__ == "__main__":
+def start():
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()

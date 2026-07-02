@@ -9,6 +9,8 @@ import pytesseract
 from deep_translator import GoogleTranslator
 from PyQt6 import uic
 
+from main import start
+
 
 # checking for the existence of the necessary files
 if not os.path.exists('screenshots'):
@@ -39,7 +41,7 @@ parser = argparse.ArgumentParser(
     prog='Screen Translator',
     description="""
 ╔══════════════════════════════════════════════════════════════╗
-║                 SCREEN TRANSLATOR v1.0.2                     ║
+║                  SCREEN TRANSLATOR v1.0.2                    ║
 ║                  Перевод текста с экрана                     ║
 ╚══════════════════════════════════════════════════════════════╝
 
@@ -57,6 +59,7 @@ parser.add_argument("-trl", action='store_true', help="При запуске с 
 parser.add_argument("-pth", type=str, help="Путь до файла tesseract")
 parser.add_argument("-log", action='store_true', help="Вывод ошибок")
 parser.add_argument("-tex", nargs="*", help="Перевести текст")
+parser.add_argument("-startgui", action='store_true', help="Открывает gui")
 
 args = parser.parse_args()
 
@@ -212,6 +215,9 @@ if args.log:
 if args.tex:
     translate_text()
 
-if not args.trl and not args.pth and not args.log and not args.tex:
+if args.startgui:
+    start()
+
+if not args.trl and not args.pth and not args.log and not args.tex and not args.startgui:
     print("Вы ничего не ввели: "
           "Используйте -trl для начала работы если путь уже установлен, иначе используйте -pth <путь>")
